@@ -70,7 +70,7 @@ data_2020 <- raw_data %>%
 
 In this chapter, we perform k-means clustering of the text for 2004. We select the optimal number of clusters using the Elbow method and the Silhouette method. Then we check if the number of clusters so selected is correct. At the end, we visualize the clusters using wordclouds.
 
-### Data cleaning
+### Data preparation
 
 We perform text cleaning remove stopwords. Since the analysis is only about Australia we decide to remove words that are related to the geography of Australia (australia, australian, nsw, queensland, victoria).
 
@@ -276,47 +276,67 @@ cluster_summary_2004
 
 ###### Word Cloud for Cluster No. 1
 
-
-
 ```{r wordcloud_1_4_2004}
 wordcloud(words = names(cluster_words_2004[[ 1 ]]), 
-          freq = cluster_words_2004[[ 1 ]], max.words=3, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
+          freq = cluster_words_2004[[ 1 ]], max.words=4, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-Analysing the word cloud above, I find that they come from the **clothing industry**.
+The first cluster can be explained as headlining related to the court's statements related to the fires. 
 
 ###### Word Cloud for Cluster No. 2
 
 ```{r wordcloud_2_4_2004}
 wordcloud(words = names(cluster_words_2004[[ 2 ]]), 
-          freq = cluster_words_2004[[ 2 ]], max.words=3, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
+          freq = cluster_words_2004[[ 2 ]], max.words=4, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-Analysing the word cloud above, I find that they come from the **gaming industry**.
+The second cluster is related to the council's plans for war in Iraq.
 
 ###### Word Cloud for Cluster No. 3
 
 ```{r wordcloud_3_4_2004}
 wordcloud(words = names(cluster_words_2004[[ 3 ]]), 
-          freq = cluster_words_2004[[ 3 ]], max.words=3, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
+          freq = cluster_words_2004[[ 3 ]], max.words=4, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-Analysing the word cloud above, I find that they come from the **gaming industry**.
+The third cluster is related to the 2004 elections and the new government.
 
 ###### Word Cloud for Cluster No. 4
 
-```{r wordcloud_3_4_2004}
+```{r wordcloud_4_4_2004}
 wordcloud(words = names(cluster_words_2004[[ 4 ]]), 
-          freq = cluster_words_2004[[ 4 ]], max.words=3, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
+          freq = cluster_words_2004[[ 4 ]], max.words=4, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-Analysing the word cloud above, I find that they come from the **gaming industry**.
+The fourth cluster is related to the police theme. We think this may be related to the fact that the number of topics that link to police intervention is simply predominant.
 
 ### Conclusions
 
+In this chapter, we did text clustering on a narrowed date range of 2004. We checked whether the number of clusters indicated by statistical methods (elbow method and silhouette method) is the best possible method to indicate the correct number of clusters.  To do this, we compared clustering by statistical methods with the number of clusters chosen arbitrarily.
+
+The elbow and silhouette methods indicated that the best number of clusters is 2. We arbitrarily indicated 4 clusters. In our opinion, clustering up to **4 clusters** is better.
+
+We made an attempt to explain these clusters. These clusters describe the following topics:
+
+* **judiciary**
+
+* **Iraq war politics**
+
+* **elections**
+
+* **general topics related to police intervention**
+
 ## Topic Modelling
 
-```{r}
+Another topic we are addressing is topic modelling. This is the second unsupervised method besides text clustering for discovering text structures. Unlike clustering, topic modelling allows more than one topic to be assigned to a given text (clustering allows a given text to be assigned to only one cluster).
+
+For topic modeling, we use Latent Dirichlet Allocation (LDA), which is the most prominent topic modeling method currently in use. 
+
+LDA uses *Dirichlet distribution*, which is called *Dirichlet prior*. This is used both to assign topics to documents and to find words for topics.
+
+### Data preparation 
+
+```{r topic_modeling_preli_2004}
 top_terms_by_topic_LDA <- function(input_text, # should be a columm from a dataframe
                                    plot = T, # return a plot? TRUE by defult
                                    number_of_topics = 8) # number of topics (4 by default)
@@ -357,34 +377,24 @@ top_terms_by_topic_LDA <- function(input_text, # should be a columm from a dataf
     return(top_terms)
   }
 }
-```
 
-```{r}
 # create a document term matrix to clean
 Corpus_2004 <- Corpus(VectorSource(data_2004$headline_text)) 
 DTM_2004 <- DocumentTermMatrix(Corpus_2004)
-```
 
-```{r}
 # convert the document term matrix to a tidytext corpus
 DTM_tidy_2004 <- tidy(DTM_2004)
-```
 
-```{r}
 # I'm going to add my own custom stop words that I don't think will be
 # very informative
 custom_stop_words_2004 <- tibble(word = c("australia", "australian", 
                                           "queensland", "nsw", "victoria"))
-```
 
-```{r}
 # remove stopwords
 DTM_tidy_cleaned_2004 <- DTM_tidy_2004 %>% # take our tidy dtm and...
   anti_join(stop_words, by = c("term" = "word")) %>% # remove English stopwords and...
   anti_join(custom_stop_words_2004, by = c("term" = "word")) # remove my custom stopwords
-```
 
-```{r}
 # reconstruct cleaned documents (so that each word shows up the correct number of times)
 # stem the words (e.g. convert each word to its stem, where applicable)
 cleaned_documents_2004 <- DTM_tidy_cleaned_2004 %>%
@@ -394,7 +404,9 @@ cleaned_documents_2004 <- DTM_tidy_cleaned_2004 %>%
   unique()
 ```
 
-```{r}
+### Plot
+
+```{r top_terms_2004}
 # now let's look at the new most informative terms
 top_terms_by_topic_LDA(cleaned_documents_2004$terms, number_of_topics = 4)
 ```
@@ -436,17 +448,17 @@ best_n_matrix_2020 <- as.matrix(dist(tdms_2020, method="euclidian"))
 
 I use the Elbow method and the Silhouette method to select the optimal number of clusters.
 
-**Elbow method**
+#### Elbow method
 
-```{r}
+```{r elbow_2020}
 fviz_nbclust(best_n_matrix_2020, kmeans, method = "wss") +
   geom_vline(xintercept = 2, linetype = "dashed") +
   labs(subtitle = "Elbow method")
 ```
 
-**Silhouette method**
+#### Silhouette method
 
-```{r}
+```{r silhouette_2020}
 fviz_nbclust(best_n_matrix_2020, kmeans, method = "silhouette")+
   labs(subtitle = "Silhouette method")
 ```
@@ -455,18 +467,18 @@ I choose ? clusters.
 
 ### Visualize clusters
 
-**Clustplot**
+#### Clustplot
 
-```{r}
+```{r clust_2_2020}
 kfit_2020 <- kmeans(dist(tdms_2020, method="euclidian"), 2)
 
 clusplot(as.matrix(dist(tdms_2020, method="euclidian")), kfit_2020$cluster, color=T, shade=T, labels=2, lines=0, 
          main = "2D Representation of Clusters")
 ```
 
-**Hierarchical clustering**
+#### Hierarchical clustering
 
-```{r}
+```{r hier_2_2020}
 d_2020 <- dist(tdms_2020, method="euclidian")
 
 hc_2020 <- hclust(d_2020, "ward.D")
@@ -485,11 +497,7 @@ plot(hc_2020, main = "Hierarchical clustering",
 
 It can be observed that the two groups are significantly different. The first group is much more complex than the second.
 
-### Conclusions
-
-#### Word Cloud
-
-```{r, echo=FALSE, include=FALSE}
+```{r summ_2020, echo=FALSE, include=FALSE}
 p_words_2020 <- colSums(t(as.matrix(tdms_2020))) / sum(t(as.matrix(tdms_2020)))
 
 cluster_words_2020 <- lapply(unique(clustering_2020), function(x){
@@ -516,25 +524,25 @@ cluster_summary_2020 <- data.frame(cluster = unique(clustering_2020),
 cluster_summary_2020
 ```
 
-**Word Cloud for Cluster No. 1**
+#### Word Cloud for Cluster No. 1
 
-```{r}
+```{r wordcloud_1_2_2020}
 wordcloud(words = names(cluster_words_2020[[ 1 ]]), 
           freq = cluster_words_2020[[ 1 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
 Analysing the word cloud above, I find that they come from the **clothing industry**.
 
-**Word Cloud for Cluster No. 2**
+#### Word Cloud for Cluster No. 2
 
-```{r}
+```{r wordcloud_2_2_2020}
 wordcloud(words = names(cluster_words_2020[[ 2 ]]), 
           freq = cluster_words_2020[[ 2 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
 Analysing the word cloud above, I find that they come from the **gaming industry**.
 
-### Additional analyisis
+### Additional analysis
 
 ```{r load_cleaning_no_covid}
 docs_2020 <- tm_map(docs_2020, removeWords, c("coronavirus")) # remove 'coronavirus'
@@ -555,17 +563,17 @@ best_n_matrix_2020 <- as.matrix(dist(tdms_2020, method="euclidian"))
 
 I use the Elbow method and the Silhouette method to select the optimal number of clusters.
 
-**Elbow method**
+##### Elbow method
 
-```{r}
+```{r elbow_2020_no_covid}
 fviz_nbclust(best_n_matrix_2020, kmeans, method = "wss") +
   geom_vline(xintercept = 2, linetype = "dashed") +
   labs(subtitle = "Elbow method")
 ```
 
-**Silhouette method**
+##### Silhouette method
 
-```{r}
+```{r silhouette_2020_no_covid}
 fviz_nbclust(best_n_matrix_2020, kmeans, method = "silhouette")+
   labs(subtitle = "Silhouette method")
 ```
@@ -574,29 +582,24 @@ I choose ? clusters.
 
 #### Visualize clusters
 
-**Clustplot**
+##### Clustplot
 
-```{r}
+```{r clust_2020_no_covid}
 kfit_2020 <- kmeans(dist(tdms_2020, method="euclidian"), 2)
 
 clusplot(as.matrix(dist(tdms_2020, method="euclidian")), kfit_2020$cluster, color=T, shade=T, labels=2, lines=0, 
          main = "2D Representation of Clusters")
 ```
 
-**Hierarchical clustering**
+##### Hierarchical clustering
 
-```{r}
+```{r hier_2020_no_covid}
 d_2020 <- dist(tdms_2020, method="euclidian")
 
 hc_2020 <- hclust(d_2020, "ward.D")
 
-
-# Hierarchical
-#clustering <- cutree(hc, 4)
-
 # Kmeans
 clustering_2020 <- kfit_2020$cluster
-
 
 plot(hc_2020, main = "Hierarchical clustering",
      ylab = "", xlab = "", yaxt = "n")
@@ -604,11 +607,7 @@ plot(hc_2020, main = "Hierarchical clustering",
 
 It can be observed that the two groups are significantly different. The first group is much more complex than the second.
 
-### Conclusions
-
-#### Word Cloud
-
-```{r, echo=FALSE, include=FALSE}
+```{r summ_2020_no_covid, echo=FALSE, include=FALSE}
 p_words_2020 <- colSums(t(as.matrix(tdms_2020))) / sum(t(as.matrix(tdms_2020)))
 
 cluster_words_2020 <- lapply(unique(clustering_2020), function(x){
@@ -635,24 +634,25 @@ cluster_summary_2020 <- data.frame(cluster = unique(clustering_2020),
 cluster_summary_2020
 ```
 
-**Word Cloud for Cluster No. 1**
+##### Word Cloud for Cluster No. 1
 
-```{r}
+```{r wordcloud_1_2_2020_no_covid}
 wordcloud(words = names(cluster_words_2020[[ 1 ]]), 
           freq = cluster_words_2020[[ 1 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
 Analysing the word cloud above, I find that they come from the **clothing industry**.
 
-**Word Cloud for Cluster No. 2**
+##### Word Cloud for Cluster No. 2
 
-```{r}
+```{r wordcloud_2_2_2020_no_covid}
 wordcloud(words = names(cluster_words_2020[[ 2 ]]), 
           freq = cluster_words_2020[[ 2 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
 Analysing the word cloud above, I find that they come from the **gaming industry**.
 
+### Conclusions
 
 ## Topic Modelling
 
