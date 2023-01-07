@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Data description
 
-This project used a dataset containing Australian news headlines over a nineteen-year period (2003-2021). The news source is the reputable Australian news source ABC (Australian Broadcasting Corporation), which was downloaded from Kaggle.
+This project used a dataset containing Australian news headlines over a nineteen-year period (2003-2021). The news source is the reputable Australian news source ABC (Australian Broadcasting Corporation), which was downloaded from [Kaggle](https://www.kaggle.com/datasets/therohk/million-headlines).
 
 The dataset consists of more than 1.2 million **headlines** along with the **dates** they were published. 
 
@@ -336,6 +336,11 @@ LDA uses *Dirichlet distribution*, which is called *Dirichlet prior*. This is us
 
 ### Data preparation 
 
+In order to prepare data for topic modelling, we create Corpus and Document Term Matrix. As with clustering, we remove words related to Australia's geography (such as *australia*, *australian*, *queensland*, *nsw*, *victoria*).
+We also remove stopwords and do stemming.
+
+Below are the cleaned texts.
+
 ```{r topic_modeling_preli_2004}
 top_terms_by_topic_LDA <- function(input_text, # should be a columm from a dataframe
                                    plot = T, # return a plot? TRUE by defult
@@ -357,7 +362,7 @@ top_terms_by_topic_LDA <- function(input_text, # should be a columm from a dataf
   # get the top ten terms for each topic
   top_terms <- topics  %>% # take the topics data frame and..
     group_by(topic) %>% # treat each topic as a different group
-    top_n(10, beta) %>% # get the top 10 most informative words
+    top_n(3, beta) %>% # get the top 4 most informative words
     ungroup() %>% # ungroup
     arrange(topic, -beta) # arrange words in descending informativeness
   
@@ -402,22 +407,95 @@ cleaned_documents_2004 <- DTM_tidy_cleaned_2004 %>%
   mutate(terms = toString(rep(wordStem(term), count))) %>%
   select(document, terms) %>%
   unique()
+cleaned_documents_2004
 ```
 
-### Plot
+### Number of topics
 
-```{r top_terms_2004}
+Let's analyze how subjects change when their number changes. Since the texts analyzed are relatively short, we narrow the number of words describing a topic to 3.
+
+#### 4 topics
+
+Four themes seem to describe the news well. We describe the topics as follows:
+
+1. **government plans**
+2. **Iraq war plans**
+3. **government and police**
+4. **current politics**
+
+However, 4 topics seems too small a number for a year's worth of news.  Let's see how it looks for 8 topics.
+
+```{r top_terms_4_2004}
 # now let's look at the new most informative terms
 top_terms_by_topic_LDA(cleaned_documents_2004$terms, number_of_topics = 4)
 ```
 
+#### 8 topics
+
+Eight topics describe the news better than four topics. We describe the topics as follows:
+
+1. **murder**
+2. **police casual intervention**
+3. **police crime intervention**
+4. **police**
+5. **fires**
+6. **police with government**
+7. **politics**
+8. **water**
+
+The division seems better than for 4 topics, but sometimes it is difficult to see what the difference is between the different topics containing the word *police*.
+Let's still check how the 16 topics will look like.
+
+```{r top_terms_8_2004}
+# now let's look at the new most informative terms
+top_terms_by_topic_LDA(cleaned_documents_2004$terms, number_of_topics = 8)
+```
+
+#### 16 topics
+
+With sixteen topics, it is already very difficult to pinpoint what each topic is about.
+
+However, there are topics that we have not observed before such as:
+
+11. **drug lawsuit**
+15. **layoffs**
+
+```{r top_terms_16_2004}
+# now let's look at the new most informative terms
+top_terms_by_topic_LDA(cleaned_documents_2004$terms, number_of_topics = 16)
+```
+
+### Conclusions
+
+In this chapter, we conducted topic modeling for 2004 data. Identifying the correct number of topics proved to be a difficult task. The main themes were:
+
+* **police**
+* **politics**
+* **crimes**
+
+A factor that negatively affected the evaluation of topics could be the length of the texts analyzed (no longer than 10 words, mostly 6 words).
+
+Nevertheless, the indicated topics overlap with those identified through clustering. 
+
 # Year of 2020
+
+We conduct an analogous analysis for 2020. We repeat all the steps similarly as for 2004. In the process, we run into the problem of the dominance of the coronavirus topic over other news topics. We try to remedy this problem by removing the word from the text.
 
 ## Clustering
 
-*The folder "text_files" contains text files written on various topics by two persons. Interests of person 1 and person 2 are very distinct. Note that the file title doesn't necessarily reflect its content. Use a chosen method of clustering in order to find into which categories/concepts/topics belong these files. Can you say anything relevant about types of these texts or, maybe, about their authors?*
+As for 2004, here we also perform k-means clustering. We use the Elbow method and Silhouette to indicate the correct number of clusters. We compare this number with the arbitrarily indicated number of clusters. We present the results using wordclouds.
 
 ### Data cleaning
+
+The same data preparation steps as for 2004:
+
+* removing punctuation
+* remove numbers
+* transforming to lowercase
+* remove stopwords
+* removing custom words
+* reducing sparcity
+* calculating distance matrix (euclidian)
 
 ```{r load_cleaning_2020}
 docs_2020 <- VCorpus(VectorSource(data_2020$headline_text))
@@ -434,11 +512,9 @@ docs_2020 <- tm_map(docs_2020, stripWhitespace)
 
 # Create document-term matrix
 tdm_2020 <- TermDocumentMatrix(docs_2020)
-tdm_2020
 
 # Reduce sparcity
 tdms_2020 <- removeSparseTerms(tdm_2020, sparse = 0.99)
-tdms_2020
 
 # Calculate distance matrix
 best_n_matrix_2020 <- as.matrix(dist(tdms_2020, method="euclidian"))
@@ -446,7 +522,7 @@ best_n_matrix_2020 <- as.matrix(dist(tdms_2020, method="euclidian"))
 
 ### Find optimal number of clusters
 
-I use the Elbow method and the Silhouette method to select the optimal number of clusters.
+Just as for 2004 we propose two approaches. One based solely on statistical methods. The other based on observations resulting from abitrary selection of number of clusters. Then we compare which method gives better results.
 
 #### Elbow method
 
@@ -483,13 +559,8 @@ d_2020 <- dist(tdms_2020, method="euclidian")
 
 hc_2020 <- hclust(d_2020, "ward.D")
 
-
-# Hierarchical
-#clustering <- cutree(hc, 4)
-
 # Kmeans
 clustering_2020 <- kfit_2020$cluster
-
 
 plot(hc_2020, main = "Hierarchical clustering",
      ylab = "", xlab = "", yaxt = "n")
@@ -508,8 +579,6 @@ cluster_words_2020 <- lapply(unique(clustering_2020), function(x){
   
   colSums(t(as.matrix(rows_2020))) / sum(t(as.matrix(rows_2020))) - p_words_2020[ colnames(t(as.matrix(rows_2020))) ]
 })
-
-
 
 # create a summary table of the top 5 words defining each cluster
 cluster_summary_2020 <- data.frame(cluster = unique(clustering_2020),
@@ -549,11 +618,9 @@ docs_2020 <- tm_map(docs_2020, removeWords, c("coronavirus")) # remove 'coronavi
 
 # Create document-term matrix
 tdm_2020 <- TermDocumentMatrix(docs_2020)
-tdm_2020
 
 # Reduce sparcity
 tdms_2020 <- removeSparseTerms(tdm_2020, sparse = 0.99)
-tdms_2020
 
 # Calculate distance matrix
 best_n_matrix_2020 <- as.matrix(dist(tdms_2020, method="euclidian"))
@@ -656,33 +723,27 @@ Analysing the word cloud above, I find that they come from the **gaming industry
 
 ## Topic Modelling
 
-```{r}
+### Data preparation
+
+```{r topic_modeling_preli_2020}
 # create a document term matrix to clean
 Corpus_2020 <- Corpus(VectorSource(data_2020$headline_text)) 
 DTM_2020 <- DocumentTermMatrix(Corpus_2020)
-```
 
-```{r}
 # convert the document term matrix to a tidytext corpus
 DTM_tidy_2020 <- tidy(DTM_2020)
-```
 
-```{r}
 # I'm going to add my own custom stop words that I don't think will be
 # very informative
 custom_stop_words_2020 <- tibble(word = c("australia", "australian", 
                                           "queensland", "nsw", "victoria",
                                           "coronavirus"))
-```
 
-```{r}
 # remove stopwords
 DTM_tidy_cleaned_2020 <- DTM_tidy_2020 %>% # take our tidy dtm and...
   anti_join(stop_words, by = c("term" = "word")) %>% # remove English stopwords and...
   anti_join(custom_stop_words_2020, by = c("term" = "word")) # remove my custom stopwords
-```
 
-```{r}
 # reconstruct cleaned documents (so that each word shows up the correct number of times)
 # stem the words (e.g. convert each word to its stem, where applicable)
 cleaned_documents_2020 <- DTM_tidy_cleaned_2020 %>%
@@ -690,13 +751,34 @@ cleaned_documents_2020 <- DTM_tidy_cleaned_2020 %>%
   mutate(terms = toString(rep(wordStem(term), count))) %>%
   select(document, terms) %>%
   unique()
+cleaned_documents_2020
 ```
 
-```{r}
+### Number of topics
+
+#### 4 topics
+
+```{r top_terms_4_2020}
 # now let's look at the new most informative terms
-top_terms_by_topic_LDA(cleaned_documents_2020$terms, number_of_topics = 2)
+top_terms_by_topic_LDA(cleaned_documents_2020$terms, number_of_topics = 4)
 ```
 
-# Conclusions
+#### 8 topics
+
+```{r top_terms_8_2020}
+# now let's look at the new most informative terms
+top_terms_by_topic_LDA(cleaned_documents_2020$terms, number_of_topics = 8)
+```
+
+#### 16 topics
+
+```{r top_terms_16_2020}
+# now let's look at the new most informative terms
+top_terms_by_topic_LDA(cleaned_documents_2020$terms, number_of_topics = 16)
+```
+
+### Conclusions
+
+# Final Conclusions
 
 
