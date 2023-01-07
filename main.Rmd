@@ -1,6 +1,6 @@
 ---
 title: 'Text Mining and Social Media Mining Project'
-subtitle: 'Clustering and Topic Modelling'
+subtitle: 'Clustering and Topic Modeling'
 author: 
 - Szymon Socha
 - Michał Kunstler
@@ -39,10 +39,10 @@ library(lubridate)
 library(stringr)
 library(textmineR)
 
-# Topic Modelling
+# Topic Modeling
 library(tidyverse) # general utility & workflow functions
 library(tidytext) # tidy implimentation of NLP methods
-library(topicmodels) # for LDA topic modelling 
+library(topicmodels) # for LDA topic modeling 
 library(tm) # general text mining functions, making document term matrixes
 library(SnowballC) # for stemming
 
@@ -201,7 +201,7 @@ wordcloud(words = names(cluster_words_2004[[ 1 ]]),
           freq = cluster_words_2004[[ 1 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-Wordcloud for the first cluster indicates that it illustrates the new theme of the 2004 Iraq war and the government's related plan.
+Wordcloud for the first cluster indicates that it illustrates the new topic of the 2004 **Iraq war and the government's related plan**.
 
 ###### Word Cloud for Cluster No. 2
 
@@ -210,7 +210,7 @@ wordcloud(words = names(cluster_words_2004[[ 2 ]]),
           freq = cluster_words_2004[[ 2 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-Wordcloud for the second cluster is related to the 2004 election that took place in Australia and the newly formed government.
+Wordcloud for the second cluster is related to the 2004 **election** that took place in Australia and the **newly formed government**.
 
 #### Appropriate number of clusters based on empirics
 
@@ -281,7 +281,7 @@ wordcloud(words = names(cluster_words_2004[[ 1 ]]),
           freq = cluster_words_2004[[ 1 ]], max.words=4, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-The first cluster can be explained as headlining related to the court's statements related to the fires. 
+The first cluster can be explained as headlining related to the **court's statements related to the fires**. 
 
 ###### Word Cloud for Cluster No. 2
 
@@ -290,7 +290,7 @@ wordcloud(words = names(cluster_words_2004[[ 2 ]]),
           freq = cluster_words_2004[[ 2 ]], max.words=4, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-The second cluster is related to the council's plans for war in Iraq.
+The second cluster is related to the **council's plans for war in Iraq**.
 
 ###### Word Cloud for Cluster No. 3
 
@@ -299,7 +299,7 @@ wordcloud(words = names(cluster_words_2004[[ 3 ]]),
           freq = cluster_words_2004[[ 3 ]], max.words=4, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-The third cluster is related to the 2004 elections and the new government.
+The third cluster is related to the **2004 elections and the new government**.
 
 ###### Word Cloud for Cluster No. 4
 
@@ -308,7 +308,7 @@ wordcloud(words = names(cluster_words_2004[[ 4 ]]),
           freq = cluster_words_2004[[ 4 ]], max.words=4, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-The fourth cluster is related to the police theme. We think this may be related to the fact that the number of topics that link to police intervention is simply predominant.
+The fourth cluster is related to the **police** topic. We think this may be related to the fact that the number of topics that link to police intervention is simply predominant.
 
 ### Conclusions
 
@@ -326,9 +326,9 @@ We made an attempt to explain these clusters. These clusters describe the follow
 
 * **general topics related to police intervention**
 
-## Topic Modelling
+## Topic Modeling
 
-Another topic we are addressing is topic modelling. This is the second unsupervised method besides text clustering for discovering text structures. Unlike clustering, topic modelling allows more than one topic to be assigned to a given text (clustering allows a given text to be assigned to only one cluster).
+Another topic we are addressing is topic modeling. This is the second unsupervised method besides text clustering for discovering text structures. Unlike clustering, topic modeling allows more than one topic to be assigned to a given text (clustering allows a given text to be assigned to only one cluster).
 
 For topic modeling, we use Latent Dirichlet Allocation (LDA), which is the most prominent topic modeling method currently in use. 
 
@@ -336,7 +336,7 @@ LDA uses *Dirichlet distribution*, which is called *Dirichlet prior*. This is us
 
 ### Data preparation 
 
-In order to prepare data for topic modelling, we create Corpus and Document Term Matrix. As with clustering, we remove words related to Australia's geography (such as *australia*, *australian*, *queensland*, *nsw*, *victoria*).
+In order to prepare data for topic modeling, we create Corpus and Document Term Matrix. As with clustering, we remove words related to Australia's geography (such as *australia*, *australian*, *queensland*, *nsw*, *victoria*).
 We also remove stopwords and do stemming.
 
 Below are the cleaned texts.
@@ -418,10 +418,10 @@ Let's analyze how subjects change when their number changes. Since the texts ana
 
 Four themes seem to describe the news well. We describe the topics as follows:
 
-1. **government plans**
-2. **Iraq war plans**
-3. **government and police**
-4. **current politics**
+* 1. **government plans**
+* 2. **Iraq war plans**
+* 3. **government and police**
+* 4. **current politics**
 
 However, 4 topics seems too small a number for a year's worth of news.  Let's see how it looks for 8 topics.
 
@@ -434,14 +434,14 @@ top_terms_by_topic_LDA(cleaned_documents_2004$terms, number_of_topics = 4)
 
 Eight topics describe the news better than four topics. We describe the topics as follows:
 
-1. **murder**
-2. **police casual intervention**
-3. **police crime intervention**
-4. **police**
-5. **fires**
-6. **police with government**
-7. **politics**
-8. **water**
+* 1. **murder**
+* 2. **police casual intervention**
+* 3. **police crime intervention**
+* 4. **police**
+* 5. **fires**
+* 6. **police with government**
+* 7. **politics**
+* 8. **water**
 
 The division seems better than for 4 topics, but sometimes it is difficult to see what the difference is between the different topics containing the word *police*.
 Let's still check how the 16 topics will look like.
@@ -457,8 +457,8 @@ With sixteen topics, it is already very difficult to pinpoint what each topic is
 
 However, there are topics that we have not observed before such as:
 
-11. **drug lawsuit**
-15. **layoffs**
+* 11. **drug lawsuit**
+* 15. **layoffs**
 
 ```{r top_terms_16_2004}
 # now let's look at the new most informative terms
@@ -526,24 +526,34 @@ Just as for 2004 we propose two approaches. One based solely on statistical meth
 
 #### Elbow method
 
+More on the Elbow method above (for 2004).
+
 ```{r elbow_2020}
 fviz_nbclust(best_n_matrix_2020, kmeans, method = "wss") +
   geom_vline(xintercept = 2, linetype = "dashed") +
   labs(subtitle = "Elbow method")
 ```
 
+In contrast to the Elbow method for 2004, we see a much clearer indication for the 2 clusters (a significant break in the curve). Elbow method clearly indicates that the correct number of clusters is 2.
+
 #### Silhouette method
+
+More on the Silhouette method above (for 2004).
 
 ```{r silhouette_2020}
 fviz_nbclust(best_n_matrix_2020, kmeans, method = "silhouette")+
   labs(subtitle = "Silhouette method")
 ```
 
-I choose ? clusters.
+Similarly for the Silhouette method. Much clearer indication of 2 clusters than previously for 2004.
 
 ### Visualize clusters
 
+Let's see how the visualization of clustering results for 2 clusters looks like.
+
 #### Clustplot
+
+Visualization of clusters on a 2D chart.
 
 ```{r clust_2_2020}
 kfit_2020 <- kmeans(dist(tdms_2020, method="euclidian"), 2)
@@ -551,6 +561,8 @@ kfit_2020 <- kmeans(dist(tdms_2020, method="euclidian"), 2)
 clusplot(as.matrix(dist(tdms_2020, method="euclidian")), kfit_2020$cluster, color=T, shade=T, labels=2, lines=0, 
          main = "2D Representation of Clusters")
 ```
+
+We see a very clear division into two groups. Basically, the division is based on the division of COVID - everything else. We will later evaluate whether this division is correct.
 
 #### Hierarchical clustering
 
@@ -566,7 +578,7 @@ plot(hc_2020, main = "Hierarchical clustering",
      ylab = "", xlab = "", yaxt = "n")
 ```
 
-It can be observed that the two groups are significantly different. The first group is much more complex than the second.
+The hierarchical tree visualization shows this division even more clearly.
 
 ```{r summ_2020, echo=FALSE, include=FALSE}
 p_words_2020 <- colSums(t(as.matrix(tdms_2020))) / sum(t(as.matrix(tdms_2020)))
@@ -600,7 +612,7 @@ wordcloud(words = names(cluster_words_2020[[ 1 ]]),
           freq = cluster_words_2020[[ 1 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-Analysing the word cloud above, I find that they come from the **clothing industry**.
+The first cluster included words that ambiguously point to a single theme. The words *new* and *cases* point to a COVID-related topic. The words *trump* and *says* point to some speech by US President Donald Trump.
 
 #### Word Cloud for Cluster No. 2
 
@@ -609,9 +621,13 @@ wordcloud(words = names(cluster_words_2020[[ 2 ]]),
           freq = cluster_words_2020[[ 2 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-Analysing the word cloud above, I find that they come from the **gaming industry**.
+In the second cluster, unsurprisingly, only *coronavirus* was found.
 
-### Additional analysis
+### Improvement attempt
+
+The year 2020 was a very special year. In fact, it was dominated entirely by news about coronavirus. For this reason, text analysis is hampered. Topics around coronavirus will make up the vast majority of news topics.
+
+In order to improve the quality of clustering (later also topic modeling), we decide to completely remove the word *coronavirus* from our analysis.
 
 ```{r load_cleaning_no_covid}
 docs_2020 <- tm_map(docs_2020, removeWords, c("coronavirus")) # remove 'coronavirus'
@@ -628,7 +644,7 @@ best_n_matrix_2020 <- as.matrix(dist(tdms_2020, method="euclidian"))
 
 #### Find optimal number of clusters
 
-I use the Elbow method and the Silhouette method to select the optimal number of clusters.
+Let's check what the optimal number of clusters is now suggested by Elbow method and Silhouette method after removing the word *coronavirus*.
 
 ##### Elbow method
 
@@ -638,6 +654,8 @@ fviz_nbclust(best_n_matrix_2020, kmeans, method = "wss") +
   labs(subtitle = "Elbow method")
 ```
 
+Elbow method no longer indicates such a strong division into 2 clusters. Nevertheless, the curve break for the 2 clusters is still visible. 
+
 ##### Silhouette method
 
 ```{r silhouette_2020_no_covid}
@@ -645,11 +663,13 @@ fviz_nbclust(best_n_matrix_2020, kmeans, method = "silhouette")+
   labs(subtitle = "Silhouette method")
 ```
 
-I choose ? clusters.
+Silhouette method also like Elbow method no longer so clearly indicates 2 clusters. However, two clusters should still be selected.
 
-#### Visualize clusters
+##### Visualize clusters
 
-##### Clustplot
+Let's visualize what the division into two clusters looks like.
+
+###### Clustplot
 
 ```{r clust_2020_no_covid}
 kfit_2020 <- kmeans(dist(tdms_2020, method="euclidian"), 2)
@@ -658,7 +678,9 @@ clusplot(as.matrix(dist(tdms_2020, method="euclidian")), kfit_2020$cluster, colo
          main = "2D Representation of Clusters")
 ```
 
-##### Hierarchical clustering
+We recognize that the division into two clusters is not correct. Among other things, it can be observed that the words *donald* and *trump* fell into two separate clusters. Later we try to increase the number of clusters and compare the results.
+
+###### Hierarchical clustering
 
 ```{r hier_2020_no_covid}
 d_2020 <- dist(tdms_2020, method="euclidian")
@@ -672,7 +694,7 @@ plot(hc_2020, main = "Hierarchical clustering",
      ylab = "", xlab = "", yaxt = "n")
 ```
 
-It can be observed that the two groups are significantly different. The first group is much more complex than the second.
+The incorrect division of clusters is confirmed by hierarchical tree analysis. The words *donald* and *trump* are close to each other and should not go into separate clusters.
 
 ```{r summ_2020_no_covid, echo=FALSE, include=FALSE}
 p_words_2020 <- colSums(t(as.matrix(tdms_2020))) / sum(t(as.matrix(tdms_2020)))
@@ -701,29 +723,86 @@ cluster_summary_2020 <- data.frame(cluster = unique(clustering_2020),
 cluster_summary_2020
 ```
 
-##### Word Cloud for Cluster No. 1
+##### Arbitrary choice
 
-```{r wordcloud_1_2_2020_no_covid}
+So we choose the number of clusters arbitrarily. Let's see the results for 4 clusters.
+
+###### Clustplot
+
+```{r clust_2020_4_no_covid}
+kfit_2020 <- kmeans(dist(tdms_2020, method="euclidian"), 4)
+
+clustering_2020 <- kfit_2020$cluster
+
+cluster_words_2020 <- lapply(unique(clustering_2020), function(x){
+  rows_2020 <- tdms_2020[ clustering_2020 == x , ]
+  
+  # for memory's sake, drop all words that don't appear in the cluster
+  rows_2020 <- rows_2020[ , colSums(t(as.matrix(rows_2020))) > 0 ]
+  
+  colSums(t(as.matrix(rows_2020))) / sum(t(as.matrix(rows_2020))) - p_words_2020[ colnames(t(as.matrix(rows_2020))) ]
+})
+
+clusplot(as.matrix(dist(tdms_2020, method="euclidian")), kfit_2020$cluster, color=T, shade=T, labels=2, lines=0, 
+         main = "2D Representation of Clusters")
+```
+
+The results look much more promising. We have a breakdown of Donald Trump and three other clusters related to different per-pandemic topics.
+
+###### Word Cloud for Cluster No. 1
+
+```{r wordcloud_1_4_2020_no_covid}
 wordcloud(words = names(cluster_words_2020[[ 1 ]]), 
           freq = cluster_words_2020[[ 1 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-Analysing the word cloud above, I find that they come from the **clothing industry**.
+The first cluster can be described as describing **court rulings on new panemic regulations** and their links to health.
 
-##### Word Cloud for Cluster No. 2
+###### Word Cloud for Cluster No. 2
 
-```{r wordcloud_2_2_2020_no_covid}
+```{r wordcloud_2_4_2020_no_covid}
 wordcloud(words = names(cluster_words_2020[[ 2 ]]), 
           freq = cluster_words_2020[[ 2 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
 ```
 
-Analysing the word cloud above, I find that they come from the **gaming industry**.
+We describe the second cluster as **new restrictions introduced by the government** due to the number of cases.
+
+###### Word Cloud for Cluster No. 3
+
+```{r wordcloud_3_4_2020_no_covid}
+wordcloud(words = names(cluster_words_2020[[ 3 ]]), 
+          freq = cluster_words_2020[[ 3 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
+```
+
+The third cluster is **Donald Trump's speeches**.
+
+###### Word Cloud for Cluster No. 4
+
+```{r wordcloud_4_4_2020_no_covid}
+wordcloud(words = names(cluster_words_2020[[ 4 ]]), 
+          freq = cluster_words_2020[[ 4 ]], max.words=5, rot.per=0.2, colors = brewer.pal(6, "Dark2"))
+```
+
+The fourth cluster is the **new responsibilities of the police**.
 
 ### Conclusions
 
-## Topic Modelling
+We performed clusterization on data from 2020. Because of the very prevalent coronavirus theme that year, the quality of clustering was not satisfactory. To improve, we removed the word *coronavirus* from the analysis. As a result, we noticed an improvement in the results.
+
+We fixed the number of clusters at 4. We described them as follows:
+
+* 1. **court rulings on new panemic regulations**
+* 2. **new restrictions introduced by the government**
+* 3. **Donald Trump's speeches**
+* 4. **new responsibilities of the police**
+
+## Topic Modeling
+
+With the topic of clustering, we showed that removing the word *coronavirus* improves the analysis results. We perform Topic Modeling immediately on the text with the word *coronavirus* removed.
 
 ### Data preparation
+
+Data preparation analogous to Topic Modeling done for 2004. In addition, at the very beginning we remove the word *coronavirus*.
 
 ```{r topic_modeling_preli_2020}
 # create a document term matrix to clean
@@ -736,8 +815,8 @@ DTM_tidy_2020 <- tidy(DTM_2020)
 # I'm going to add my own custom stop words that I don't think will be
 # very informative
 custom_stop_words_2020 <- tibble(word = c("australia", "australian", 
-                                          "queensland", "nsw", "victoria",
-                                          "coronavirus"))
+                                          "melbourne", "queensland", "nsw", "victoria",
+                                          "covid", "coronavirus"))
 
 # remove stopwords
 DTM_tidy_cleaned_2020 <- DTM_tidy_2020 %>% # take our tidy dtm and...
@@ -756,29 +835,97 @@ cleaned_documents_2020
 
 ### Number of topics
 
+As before, we look at how subjects change due to changes in their numbers.
+
 #### 4 topics
+
+Let's check out the breakdown of the 4 topics.
 
 ```{r top_terms_4_2020}
 # now let's look at the new most informative terms
 top_terms_by_topic_LDA(cleaned_documents_2020$terms, number_of_topics = 4)
 ```
 
+At first glance, the division into 4 topics seems correct, however, perhaps it is too simple. We propose the following description of the topics:
+
+* 1. **current information on government policy**
+* 2. **reports on deaths**
+* 3. **news from the state of Victoria**
+* 4. **new bushfires**
+
 #### 8 topics
+
+Let's check out the breakdown of the 8 topics.
 
 ```{r top_terms_8_2020}
 # now let's look at the new most informative terms
 top_terms_by_topic_LDA(cleaned_documents_2020$terms, number_of_topics = 8)
 ```
 
+The naming of the topics resulting from the division into 8 is not clear. We distinguish such topics as:
+
+* 1. **current information on government policy**
+* 2. **reports on deaths in Sydney**
+* 4. **fires crossing the (state) border**
+* 5. **impact of fires on pandemic**
+* 7. **statements made by Donald Trump about China**
+
+The remaining topics are not identified.
+
 #### 16 topics
+
+Let's check out the breakdown of the 16 topics.
 
 ```{r top_terms_16_2020}
 # now let's look at the new most informative terms
 top_terms_by_topic_LDA(cleaned_documents_2020$terms, number_of_topics = 16)
 ```
 
+The naming of the topics created by the 16 division is even less clear-cut than that of the 8 division. Nevertheless, we distinguish such topics as:
+
+* 1. **current information on election results**
+* 2. **reports on deaths in Sydney**
+* 4. **fires crossing the (state) border**
+* 6. **health in the context of the US election**
+* 8. **fire danger to buildings**
+* 10. **COVID policy in China**
+* 13. **fear of death**
+
+The remaining topics are not identified.
+
 ### Conclusions
+
+In this section, we conducted Topic Modeling for 2020. Identifying topics proved to be a difficult challenge. We believe that (as with the analysis for 2004) this was influenced by the length of the texts analyzed (no longer than 10 words, mostly 6 words)
+
+We identified the following topics:
+
+* **reports on COVID**
+* **elections in the United States**
+* **bushfires**
+
+The topics overlap with those identified by clustering.
 
 # Final Conclusions
 
+In this project, we used news headline data for 2004 and 2020 to perform text clustering and topic modeling. We used Elbow and Silhouette methods to identify the optimal number of clusters and compared the results with an arbitrary number of clusters. We showed the results in the graphs.
 
+For both the 2004 and 2020 analysis, clustering with an arbitrarily chosen number of clusters turned out to be better. The topics identified by Text Clustering and Topic Modeling were similar and consistent.
+
+For 2004, we identified the following topics:
+
+* **judiciary**
+* **Iraq war politics**
+* **politics**
+* **elections**
+* **general topics related to police intervention**
+
+For 2020, we identified the following themes:
+
+* **court rulings on new panemic regulations**
+* **new restrictions introduced by the government**
+* **new responsibilities of the police**
+* **reports on COVID**
+* **elections in the United States**
+* **bushfires**
+
+We also note that it was not always possible to identify a topic. We point to problematic input in the form of very short texts (maximum 10 words) as the reason. For this reason, we did not have enough words per text to be able to uniquely identify some topics.
